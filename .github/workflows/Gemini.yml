@@ -1,0 +1,22 @@
+name: Gemini Auto Assist
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  gemini-assist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gemini GitHub Action
+        uses: intellisoft-ai/gemini-github-action@v1.2.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          gemini_prompt: |
+            Please provide helpful suggestions or summaries for this ${{
+              github.event_name == 'issues' && 'issue' || 'pull request'
+            }}:
+            ${{ github.event.issue.body || github.event.pull_request.body }}
