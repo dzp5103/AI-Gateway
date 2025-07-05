@@ -1,0 +1,16 @@
+# .github/copilot.yaml
+on:
+  issues:
+    types: [opened]
+    actions:
+      - assign: ["copilot", "dzp5103"]
+      - label: ["triage"]
+      - comment: |
+          👋 Thanks for opening this issue! The Copilot Agent is here to help.
+  pull_request:
+    types: [opened]
+    actions:
+      - assign: ["copilot", "dzp5103"]
+      - label: ["auto"]
+      - comment: |
+          🚀 Copilot Agent is reviewing this PR.
