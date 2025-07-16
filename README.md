@@ -113,6 +113,15 @@ Playground to try the OpenAI [function calling](https://learn.microsoft.com/azur
 
 ## 🧪 Labs with the Inference API
 
+<!-- Azure AI Foundry OpenAI Compatibility -->
+### [**🧪 Azure AI Foundry OpenAI Compatibility**](labs/azure-ai-foundry-openai-compatibility/azure-ai-foundry-openai-compatibility.ipynb)
+
+Playground to configure [Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry) with Azure API Management for optimal OpenAI API compatibility with VS Code extensions like [Cline](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev), LangChain, and other OpenAI-compatible clients. This lab demonstrates how to set up endpoints, configure model switching through deployment names, and provide seamless integration for development tools.
+
+[<img src="images/azure-ai-foundry-openai-compatibility-small.gif" alt="flow" style="width: 437px; display: inline-block;" data-target="animated-image.originalImage">](labs/azure-ai-foundry-openai-compatibility/azure-ai-foundry-openai-compatibility.ipynb)
+
+[🦾 Bicep](labs/azure-ai-foundry-openai-compatibility/main.bicep) ➕ [⚙️ Policy](labs/azure-ai-foundry-openai-compatibility/policy.xml) ➕ [🧾 Notebook](labs/azure-ai-foundry-openai-compatibility/azure-ai-foundry-openai-compatibility.ipynb) ➕ [📖 VS Code Guide](labs/azure-ai-foundry-openai-compatibility/VSCODE_EXTENSIONS_GUIDE.md)
+
 <!-- AI Foundry Deepseek -->
 ### [**🧪 AI Foundry Deepseek**](labs/ai-foundry-deepseek/ai-foundry-deepseek.ipynb)
 

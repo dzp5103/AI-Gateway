@@ -1,0 +1,112 @@
+<policies>
+    <inbound>
+        <base />
+        <!-- Set the Azure AI Foundry backend service -->
+        <set-backend-service backend-id="azure-ai-foundry-backend" />
+        
+        <!-- Authenticate using managed identity -->
+        <authentication-managed-identity resource="https://ml.azure.com" output-token-variable-name="managed-id-access-token" ignore-error="false" />
+        <set-header name="Authorization" exists-action="override">
+            <value>@("Bearer " + (string)context.Variables["managed-id-access-token"])</value>
+        </set-header>
+        
+        <!-- OpenAI API compatibility: Handle different endpoint formats -->
+        <choose>
+            <!-- Handle OpenAI-style deployment endpoints: /deployments/{deployment-name}/chat/completions -->
+            <when condition="@(context.Request.Url.Path.Contains("/deployments/"))">
+                <set-variable name="deployment-name" value="@{
+                    string path = context.Request.Url.Path;
+                    string[] segments = path.Split('/');
+                    for (int i = 0; i < segments.Length - 1; i++) {
+                        if (segments[i] == "deployments") {
+                            return segments[i + 1];
+                        }
+                    }
+                    return "gpt-4o"; // default deployment
+                }" />
+                <!-- Rewrite URL to Azure AI Foundry format -->
+                <rewrite-uri template="@("/models/" + (string)context.Variables["deployment-name"] + "/chat/completions")" />
+            </when>
+            <!-- Handle direct model endpoints: /chat/completions with model in body -->
+            <when condition="@(context.Request.Url.Path.EndsWith("/chat/completions"))">
+                <!-- Extract model from request body and map to deployment -->
+                <set-body>@{
+                    var body = context.Request.Body.As<JObject>();
+                    if (body["model"] != null) {
+                        var modelName = body["model"].ToString();
+                        // Map OpenAI model names to Azure AI Foundry deployment names
+                        var deploymentName = modelName;
+                        body["model"] = deploymentName;
+                        context.Variables["deployment-name"] = deploymentName;
+                    }
+                    return body.ToString();
+                }</set-body>
+                <!-- Set the correct Azure AI Foundry URL path -->
+                <rewrite-uri template="@("/models/" + (string)context.Variables.GetValueOrDefault("deployment-name", "gpt-4o") + "/chat/completions")" />
+            </when>
+        </choose>
+        
+        <!-- Add OpenAI API version header for compatibility -->
+        <set-header name="api-version" exists-action="override">
+            <value>2024-02-01</value>
+        </set-header>
+        
+        <!-- Token limit policy for rate limiting -->
+        <llm-token-limit counter-key="@(context.Subscription.Id)" tokens-per-minute="10000" estimate-prompt-tokens="true" remaining-tokens-variable-name="remainingTokens" />
+        
+        <!-- Emit token metrics for monitoring -->
+        <llm-emit-token-metric namespace="azure-ai-foundry">
+            <dimension name="Subscription ID" value="@(context.Subscription.Id)" />
+            <dimension name="Client IP" value="@(context.Request.IpAddress)" />
+            <dimension name="Model" value="@(context.Variables.GetValueOrDefault("deployment-name", "unknown"))" />
+            <dimension name="API ID" value="@(context.Api.Id)" />
+        </llm-emit-token-metric>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <!-- Ensure OpenAI-compatible response format -->
+        <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+        </set-header>
+        <!-- Add CORS headers for web-based extensions -->
+        <cors allow-credentials="false">
+            <allowed-origins>
+                <origin>*</origin>
+            </allowed-origins>
+            <allowed-methods>
+                <method>GET</method>
+                <method>POST</method>
+                <method>OPTIONS</method>
+            </allowed-methods>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
+        </cors>
+    </outbound>
+    <on-error>
+        <base />
+        <!-- Provide OpenAI-compatible error responses -->
+        <set-variable name="errorResponse" value="@{
+            var statusCode = context.Response.StatusCode;
+            var errorMsg = context.LastError?.Message ?? "An error occurred";
+            
+            return new JObject(
+                new JProperty("error", new JObject(
+                    new JProperty("message", errorMsg),
+                    new JProperty("type", "azure_ai_foundry_error"),
+                    new JProperty("code", statusCode.ToString())
+                ))
+            ).ToString();
+        }" />
+        <return-response>
+            <set-status code="@(context.Response.StatusCode)" reason="@(context.Response.StatusReason)" />
+            <set-header name="Content-Type" exists-action="override">
+                <value>application/json</value>
+            </set-header>
+            <set-body>@((string)context.Variables["errorResponse"])</set-body>
+        </return-response>
+    </on-error>
+</policies>
