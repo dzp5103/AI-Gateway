@@ -1,0 +1,52 @@
+{
+  "_description": "Generic VS Code settings for OpenAI-compatible extensions using Azure AI Foundry through APIM",
+  "_instructions": [
+    "1. Replace placeholders with your actual values",
+    "2. Use the setting names that match your specific extension",
+    "3. These are common patterns used by most OpenAI-compatible extensions"
+  ],
+  
+  "_common_openai_settings": {
+    "openai.apiBase": "https://your-apim-gateway.azure-api.net/azure-ai-foundry",
+    "openai.apiKey": "your-subscription-key",
+    "openai.model": "gpt-4o",
+    "openai.apiVersion": "2024-02-01",
+    "openai.maxTokens": 4096,
+    "openai.temperature": 0.7
+  },
+  
+  "_alternative_patterns": {
+    "ai.baseUrl": "https://your-apim-gateway.azure-api.net/azure-ai-foundry",
+    "ai.apiKey": "your-subscription-key",
+    "ai.model": "gpt-4o",
+    
+    "llm.endpoint": "https://your-apim-gateway.azure-api.net/azure-ai-foundry",
+    "llm.token": "your-subscription-key",
+    "llm.modelName": "gpt-4o",
+    
+    "assistant.apiEndpoint": "https://your-apim-gateway.azure-api.net/azure-ai-foundry",
+    "assistant.apiToken": "your-subscription-key",
+    "assistant.model": "gpt-4o"
+  },
+  
+  "_workspace_specific": {
+    "_comment": "For workspace-specific settings, create .vscode/settings.json in your project root",
+    "example_workspace_settings": {
+      "claude-dev.modelName": "gpt-35-turbo",
+      "claude-dev.temperature": 0.3,
+      "claude-dev.maxTokens": 2048
+    }
+  },
+  
+  "_multi_profile_setup": {
+    "_comment": "Create multiple VS Code profiles for different models/configurations",
+    "profile_1_gpt4": {
+      "claude-dev.modelName": "gpt-4o",
+      "claude-dev.temperature": 0.7
+    },
+    "profile_2_gpt35": {
+      "claude-dev.modelName": "gpt-35-turbo", 
+      "claude-dev.temperature": 0.5
+    }
+  }
+}

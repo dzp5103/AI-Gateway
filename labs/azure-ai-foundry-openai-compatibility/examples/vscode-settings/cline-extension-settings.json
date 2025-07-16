@@ -1,0 +1,30 @@
+{
+  "_description": "VS Code settings for Cline Extension using Azure AI Foundry through APIM",
+  "_instructions": [
+    "1. Replace 'your-apim-gateway.azure-api.net' with your actual APIM gateway URL",
+    "2. Replace 'your-subscription-key' with your APIM subscription key",
+    "3. Update the model name if needed (gpt-4o, gpt-35-turbo, etc.)",
+    "4. Add these settings to your VS Code settings.json file"
+  ],
+  
+  "claude-dev.apiBaseUrl": "https://your-apim-gateway.azure-api.net/azure-ai-foundry",
+  "claude-dev.apiKey": "your-subscription-key",
+  "claude-dev.modelName": "gpt-4o",
+  "claude-dev.maxTokens": 4096,
+  "claude-dev.temperature": 0.7,
+  
+  "_additional_settings": {
+    "claude-dev.enableStreaming": true,
+    "claude-dev.timeout": 30000,
+    "claude-dev.retryOnRateLimit": true,
+    "claude-dev.maxRetries": 3
+  },
+  
+  "_model_switching": {
+    "_comment": "To switch models, change the modelName value to one of:",
+    "gpt-4o": "Latest GPT-4 Omni model",
+    "gpt-4o-mini": "Smaller, faster GPT-4 Omni model", 
+    "gpt-35-turbo": "GPT-3.5 Turbo model",
+    "gpt-4": "GPT-4 model"
+  }
+}

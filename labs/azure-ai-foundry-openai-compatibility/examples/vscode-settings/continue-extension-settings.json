@@ -1,0 +1,27 @@
+{
+  "_description": "VS Code settings for Continue Extension using Azure AI Foundry through APIM",
+  "_instructions": [
+    "1. Replace 'your-apim-gateway.azure-api.net' with your actual APIM gateway URL",
+    "2. Replace 'your-subscription-key' with your APIM subscription key",
+    "3. Update the model name if needed",
+    "4. Add these settings to your Continue extension configuration"
+  ],
+  
+  "continue.serverUrl": "https://your-apim-gateway.azure-api.net/azure-ai-foundry",
+  "continue.apiKey": "your-subscription-key",
+  "continue.model": "gpt-4o",
+  "continue.maxTokens": 4096,
+  "continue.temperature": 0.5,
+  
+  "_deployment_specific_endpoints": {
+    "_comment": "Alternative: Use deployment-specific endpoints for model switching",
+    "gpt-4o-endpoint": "https://your-apim-gateway.azure-api.net/azure-ai-foundry/deployments/gpt-4o/chat/completions",
+    "gpt-35-turbo-endpoint": "https://your-apim-gateway.azure-api.net/azure-ai-foundry/deployments/gpt-35-turbo/chat/completions"
+  },
+  
+  "_context_settings": {
+    "continue.contextLength": 16384,
+    "continue.enableCodeContext": true,
+    "continue.enableFileContext": true
+  }
+}
