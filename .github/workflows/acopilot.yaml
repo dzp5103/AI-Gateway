@@ -1,0 +1,13 @@
+# .github/workflows/auto-assign.yml
+name: Auto-Assign PR
+on:
+  pull_request:
+    types: [opened]
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign PR
+        uses: pozil/auto-assign-issue@v1
+        with:
+          assignees: copilot,dzp5103
